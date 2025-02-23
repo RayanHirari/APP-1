@@ -1,0 +1,63 @@
+# Charger les données depuis un fichier CSV
+def charger_donnees():
+    donnees = []
+    f = open("ventes.csv", "r")
+    lignes = f.readlines()
+    f.close()
+    for ligne in lignes[1:]:
+        donnees.append(ligne.strip().split(","))
+    return donnees
+
+def sauvegarder_donnees(donnees):
+    f = open("ventes_mises_a_jour.csv", "w")
+    f.write("Order ID,Product,Quantity Ordered,Price Each,Order Date,Purchase Address\n")
+    for ligne in donnees:
+        f.write(",".join(ligne) + "\n")
+    f.close()
+
+def modifier_vente(donnees):
+    order_id = input("Entrez l'ID de la commande à modifier : ")
+    for ligne in donnees:
+        if ligne[0] == order_id:
+            nouvelle_quantite = input("Nouvelle quantité (laisser vide pour ne pas modifier) : ")
+            nouveau_prix = input("Nouveau prix unitaire (laisser vide pour ne pas modifier) : ")
+            if nouvelle_quantite:
+                ligne[2] = nouvelle_quantite
+            if nouveau_prix:
+                ligne[3] = nouveau_prix
+            print("Modification réussie !")
+            return
+    print("Commande introuvable.")
+
+def ajouter_vente(donnees):
+    nouvelle_vente = [
+        input("Order ID : "),
+        input("Product : "),
+        input("Quantity Ordered : "),
+        input("Price Each : "),
+        input("Order Date : "),
+        input("Purchase Address : ")
+    ]
+    donnees.append(nouvelle_vente)
+    print("Nouvelle vente ajoutée !")
+
+def interface():
+    donnees = charger_donnees()
+    while True:
+        print("\nOptions :")
+        print("1. Modifier une vente")
+        print("2. Ajouter une nouvelle vente")
+        print("3. Sauvegarder et quitter")
+        choix = input("Votre choix : ")
+        if choix == "1":
+            modifier_vente(donnees)
+        elif choix == "2":
+            ajouter_vente(donnees)
+        elif choix == "3":
+            sauvegarder_donnees(donnees)
+            print("Modifications enregistrées. Fin du programme.")
+            break
+        else:
+            print("Choix invalide, veuillez réessayer.")
+
+interface()
